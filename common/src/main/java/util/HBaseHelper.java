@@ -21,6 +21,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.metrics.ScanMetrics;
 import org.apache.hadoop.hbase.util.Bytes;
 
 /**
@@ -390,5 +391,14 @@ public class HBaseHelper implements Closeable {
         ", Value: " + Bytes.toString(cell.getValueArray(),
         cell.getValueOffset(), cell.getValueLength()));
     }
+  }
+  
+  public void dumpScanMetrics(Scan scan) {
+    if (!scan.isScanMetricsEnabled()) return;
+    ScanMetrics metrics = scan.getScanMetrics();
+    System.out.println(
+      "Regions:      " + metrics.countOfRegions + "\n" +
+      "RPCs:         " + metrics.countOfRPCcalls + "\n" +
+      "Rows Scanned: " + metrics.countOfRowsScanned);
   }
 }
